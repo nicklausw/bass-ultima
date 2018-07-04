@@ -183,7 +183,7 @@ auto Bass::assemble(const string& statement) -> bool {
     if(name) {
       setConstant({name}, pc());
       setConstant({name, ".size"}, length);
-      writeSymbolLabel(pc(), s);
+      writeSymbolLabel(pc(), name);
     }
     fp.seek(offset);
     while(!fp.end() && length--) write(fp.read());
