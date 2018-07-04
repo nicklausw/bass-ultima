@@ -133,7 +133,7 @@ auto Bass::writeSymbolLabel(int64_t value, const string& name) -> void {
   if(writePhase()) {
     if(symbolFile.open()) {
       string scopedName = {scope.merge("."), scope ? "." : "", name};
-      symbolFile.print(hex(value, 8), ' ', scopedName, '\n');
+      symbolFile.print(hex(value >> 16, 2), ':', hex(value, 4), ' ', scopedName, '\n');
     }
   }
 }
