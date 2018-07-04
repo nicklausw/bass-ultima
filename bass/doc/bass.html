@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>bass documentation</title>
+    <title>bass-ultima documentation</title>
     <style type="text/css">
       body {
         background: #fff;
@@ -46,13 +46,15 @@
     </style>
   </head>
   <body>
-    <h1>bass v15</h1>
+    <h1>bass-ultima v15</h1>
+    A fork of <a href="https://byuu.org/tool/bass/">byuu's bass assembler</a><br>
     Author: byuu<br>
+    Forked By: nicklausw<br>
     License: GPLv3<br>
     <br>
 
     <h2>Terminal Usage</h2>
-    <pre>bass [options] source [source ...]</pre>
+    <pre>bass-ultima [options] source [source ...]</pre>
 
     <h3>Options</h3>
 
@@ -67,6 +69,10 @@
 
     <p><i>-c name[=value]</i> will create a constant with the given name, and
     assign to it either a value of 1 or the value provided.</p>
+
+    <p><i>-sym filename</i> will create a symbol file with the given filename.
+    The symbol file will contain the pc address and scoped name for every
+    named label.</p>
 
     <p><i>-strict</i> will abort the assembly process on warnings.</p>
 
@@ -227,6 +233,17 @@
 
     <p><i>{defined name}</i> is substituted with either 1 (if a define by the
     given name exists) or 0 (if it does not.)</p>
+
+    <h4>File Size</h4>
+    <p>There is a special define used to get the size
+      of a file: <i>{size file.bin}</i></p>
+
+    <pre>
+    //quotes around file name are optional
+    if {size file.bin} > {size "file2.bin"} {
+    &nbsp;&nbsp;evaluate size = {size file.bin}
+    }
+    </pre>
 
     <h3>Macros</h3>
     <p>Macros are supported. They can take zero or more arguments, and name

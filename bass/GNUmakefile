@@ -4,7 +4,7 @@ include ../nall/GNUmakefile
 
 flags += -I..
 
-name := bass
+name := bass-ultima
 objects := obj/bass.o
 
 all: out/$(name)
