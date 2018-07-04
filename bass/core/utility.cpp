@@ -223,6 +223,13 @@ auto Bass::evaluateDefines(string& s) -> void {
         s = {slice(s, 0, x), findDefine(name) ? 1 : 0, slice(s, y + 1)};
         return evaluateDefines(s);
       }
+      if(name.match("size ?*")) {
+        name.trimLeft("size ",1L).strip();
+        name.trim('\"','\"',1L);
+        if(!file::exists(name)) error("file doesn't exist");
+        s = {slice(s, 0, x), file::size(name), slice(s, y + 1)};
+        return evaluateDefines(s);
+      }
 
       string_vector parameters;
       if(name.match("?*(*)")) {
