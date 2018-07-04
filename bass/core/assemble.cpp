@@ -192,7 +192,7 @@ auto Bass::assemble(const string& statement) -> bool {
   if(s.match("fill ?*")) {
     auto p = split(s.trimLeft("fill ", 1L));
     uint length = evaluate(p(0));
-    uint byte = evaluate(p(1, "0"));
+    uint byte = evaluate(p(1, "0"), Bass::Evaluation::Lax);
     while(length--) write(byte);
     return true;
   }
@@ -224,7 +224,7 @@ auto Bass::assemble(const string& statement) -> bool {
         t = text(t);
         for(auto& b : t) write(stringTable[b], dataLength);
       } else {
-        write(evaluate(t), dataLength);
+        write(evaluate(t, Bass::Evaluation::Lax), dataLength);
       }
     }
     return true;

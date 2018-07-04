@@ -103,7 +103,7 @@ auto Bass::evaluateLiteral(Eval::Node* node, Evaluation mode) -> int64_t {
   if(auto constant = findConstant(s)) return constant().value;
 
   forwardReference = true;
-  if(mode != Evaluation::Strict && queryPhase()) return pc();
+  if(mode == Evaluation::Lax && queryPhase()) return pc();
 
   if(auto constantName = findConstantName(s)) {
     error("constant has unknown value: ", constantName());
