@@ -19,6 +19,18 @@ auto Bass::target(const string& filename, bool create) -> bool {
   return true;
 }
 
+auto Bass::symFile(const string& filename) -> bool {
+  if(symbolFile.open()) symbolFile.close();
+  if(!filename) return true;
+
+  if(!symbolFile.open(filename, file::mode::write)) {
+    print(stderr, "warning: unable to open symbol file: ", filename, "\n");
+    return false;
+  }
+
+  return true;
+}
+
 auto Bass::source(const string& filename) -> bool {
   if(!file::exists(filename)) {
     print(stderr, "warning: source file not found: ", filename, "\n");
@@ -66,6 +78,7 @@ auto Bass::define(const string& name, const string& value) -> void {
 
 auto Bass::constant(const string& name, const string& value) -> void {
   try {
+    constantNames.insert(name);
     constants.insert({name, evaluate(value, Evaluation::Strict)});
   } catch(...) {
   }
@@ -116,6 +129,15 @@ auto Bass::write(uint64_t data, uint length) -> void {
   origin += length;
 }
 
+auto Bass::writeSymbolLabel(int64_t value, const string& name) -> void {
+  if(writePhase()) {
+    if(symbolFile.open()) {
+      string scopedName = {scope.merge("."), scope ? "." : "", name};
+      symbolFile.print(hex(value, 8), ' ', scopedName, '\n');
+    }
+  }
+}
+
 auto Bass::printInstruction() -> void {
   if(activeInstruction) {
     auto& i = *activeInstruction;
@@ -123,16 +145,27 @@ auto Bass::printInstruction() -> void {
   }
 }
 
+auto Bass::printInstructionStack() -> void {
+  printInstruction();
+
+  for(unsigned s : rrange(frames)) {
+    if(frames[s].invokedBy) {
+      auto& i = *frames[s].invokedBy;
+      print(stderr, "   ", sourceFilenames[i.fileNumber], ":", i.lineNumber, ":", i.blockNumber, ": ", i.statement, "\n");
+    }
+  }
+}
+
 template<typename... P> auto Bass::notice(P&&... p) -> void {
   string s{forward<P>(p)...};
   print(stderr, "notice: ", s, "\n");
-  printInstruction();
+  printInstructionStack();
 }
 
 template<typename... P> auto Bass::warning(P&&... p) -> void {
   string s{forward<P>(p)...};
   print(stderr, "warning: ", s, "\n");
-  printInstruction();
+  printInstructionStack();
 
   if(!strict) return;
   struct BassWarning {};
@@ -142,7 +175,7 @@ template<typename... P> auto Bass::warning(P&&... p) -> void {
 template<typename... P> auto Bass::error(P&&... p) -> void {
   string s{forward<P>(p)...};
   print(stderr, "error: ", s, "\n");
-  printInstruction();
+  printInstructionStack();
 
   struct BassError {};
   throw BassError();

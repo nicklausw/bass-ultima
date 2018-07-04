@@ -33,6 +33,7 @@ auto Bass::assemble(const string& statement) -> bool {
   if(s.match("function ?* {")) {
     s.trim("function ", "{", 1L).strip();
     setConstant(s, pc());
+    writeSymbolLabel(pc(), s);
     scope.append(s);
     return true;
   }
@@ -46,7 +47,12 @@ auto Bass::assemble(const string& statement) -> bool {
   //constant name(value)
   if(s.match("constant ?*")) {
     auto p = s.trimLeft("constant ", 1L).split("=", 1L).strip();
-    setConstant(p(0), evaluate(p(1)));
+    auto v = evaluate(p(1), Evaluation::Lax);
+    if(forwardReference) {
+      setUnknownConstant(p(0));
+    } else {
+      setConstant(p(0), v);
+    }
     return true;
   }
 
@@ -55,6 +61,7 @@ auto Bass::assemble(const string& statement) -> bool {
     s.trimRight(" {", 1L);
     s.trimRight(":", 1L);
     setConstant(s, pc());
+    writeSymbolLabel(pc(), s);
     return true;
   }
 
@@ -174,6 +181,7 @@ auto Bass::assemble(const string& statement) -> bool {
     if(name) {
       setConstant({name}, pc());
       setConstant({name, ".size"}, length);
+      writeSymbolLabel(pc(), s);
     }
     fp.seek(offset);
     while(!fp.end() && length--) write(fp.read());

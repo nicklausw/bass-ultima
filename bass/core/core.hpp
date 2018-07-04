@@ -2,6 +2,7 @@ struct Architecture;
 
 struct Bass {
   auto target(const string& filename, bool create) -> bool;
+  auto symFile(const string& filename) -> bool;
   auto source(const string& filename) -> bool;
   auto define(const string& name, const string& value) -> void;
   auto constant(const string& name, const string& value) -> void;
@@ -77,6 +78,7 @@ struct Bass {
     uint ip;
     bool inlined;
 
+    Instruction* invokedBy = nullptr;
     hashset<Macro> macros;
     hashset<Define> defines;
     hashset<Expression> expressions;
@@ -97,8 +99,10 @@ protected:
   auto pc() const -> uint;
   auto seek(uint offset) -> void;
   auto write(uint64_t data, uint length = 1) -> void;
+  auto writeSymbolLabel(int64_t value, const string& name) -> void;
 
   auto printInstruction() -> void;
+  auto printInstructionStack() -> void;
   template<typename... P> auto notice(P&&... p) -> void;
   template<typename... P> auto warning(P&&... p) -> void;
   template<typename... P> auto error(P&&... p) -> void;
@@ -136,8 +140,10 @@ protected:
   auto setVariable(const string& name, int64_t value, Frame::Level level) -> void;
   auto findVariable(const string& name) -> maybe<Variable&>;
 
+  auto setUnknownConstant(const string& name) -> void;
   auto setConstant(const string& name, int64_t value) -> void;
   auto findConstant(const string& name) -> maybe<Constant&>;
+  auto findConstantName(const string& name) -> maybe<string>;
 
   auto evaluateDefines(string& statement) -> void;
 
@@ -153,6 +159,7 @@ protected:
   vector<Instruction> program;    //parsed source code statements
   vector<Block> blocks;           //track the start and end of blocks
   set<Define> defines;            //defines specified on the terminal
+  hashset<string> constantNames;  //set of constant names, including those with unknown values
   hashset<Constant> constants;    //constants support forward-declaration
   vector<Frame> frames;           //macros, defines and variables do not
   vector<bool> conditionals;      //track conditional matching
@@ -169,7 +176,10 @@ protected:
   uint nextLabelCounter = 1;      //+ instance counter
   bool strict = false;            //upgrade warnings to errors when true
 
+  bool forwardReference = false;  //true if the last evaluate(string) call contained a forward reference
+
   file targetFile;
+  file symbolFile;
   string_vector sourceFilenames;
 
   shared_pointer<Architecture> architecture;
