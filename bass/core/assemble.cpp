@@ -19,13 +19,13 @@ auto Bass::assemble(const string& statement) -> bool {
   if(s.match("namespace ?* {")) {
     s.trim("namespace ", "{", 1L).strip();
     if(!validate(s)) error("invalid namespace specifier: ", s);
-    scope.append(s);
+    scope.append(s); nextLabel.append(0); lastLabel.append(0);
     return true;
   }
 
   //}
   if(s.match("} endnamespace")) {
-    scope.removeRight();
+    scope.removeRight(); nextLabel.removeRight(); lastLabel.removeRight();
     return true;
   }
 
@@ -34,13 +34,13 @@ auto Bass::assemble(const string& statement) -> bool {
     s.trim("function ", "{", 1L).strip();
     setConstant(s, pc());
     writeSymbolLabel(pc(), s);
-    scope.append(s);
+    scope.append(s); nextLabel.append(0); lastLabel.append(0);
     return true;
   }
 
   //}
   if(s.match("} endfunction")) {
-    scope.removeRight();
+    scope.removeRight(); nextLabel.removeRight(); lastLabel.removeRight();
     return true;
   }
 
@@ -67,13 +67,15 @@ auto Bass::assemble(const string& statement) -> bool {
 
   //- or - {
   if(s.match("-") || s.match("- {")) {
-    setConstant({"lastLabel#", lastLabelCounter++}, pc());
+    string s{scope.merge("."), ".lastLabel#"};
+    setConstant({s, lastLabel[lastLabel.size()-1]++}, pc());
     return true;
   }
 
   //+ or + {
   if(s.match("+") || s.match("+ {")) {
-    setConstant({"nextLabel#", nextLabelCounter++}, pc());
+    string s{scope.merge("."), ".nextLabel#"};
+    setConstant({s, nextLabel[nextLabel.size()-1]++}, pc());
     return true;
   }
 

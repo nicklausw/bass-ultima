@@ -2,10 +2,12 @@ auto Bass::evaluate(const string& expression, Evaluation mode) -> int64_t {
   forwardReference = false;
 
   maybe<string> name;
-  if(expression == "--") name = {"lastLabel#", lastLabelCounter - 2};
-  if(expression == "-" ) name = {"lastLabel#", lastLabelCounter - 1};
-  if(expression == "+" ) name = {"nextLabel#", nextLabelCounter + 0};
-  if(expression == "++") name = {"nextLabel#", nextLabelCounter + 1};
+  string last = {scope.merge("."), ".lastLabel#"};
+  string next = {scope.merge("."), ".nextLabel#"};
+  if(expression == "--") name = {last, lastLabel[lastLabel.size()-1] - 2};
+  if(expression == "-" ) name = {last, lastLabel[lastLabel.size()-1] - 1};
+  if(expression == "+" ) name = {next, nextLabel[nextLabel.size()-1] + 0};
+  if(expression == "++") name = {next, nextLabel[nextLabel.size()-1] + 1};
   if(name) {
     if(auto constant = findConstant({name()})) return constant().value;
     if(queryPhase()) return pc();

@@ -184,6 +184,9 @@ protected:
   file symbolFile;
   string_vector sourceFilenames;
 
+  vector<int> nextLabel;
+  vector<int> lastLabel;
+
   shared_pointer<Architecture> architecture;
   friend class Architecture;
 };
