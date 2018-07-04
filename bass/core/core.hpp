@@ -174,8 +174,6 @@ protected:
   uint ip = 0;                    //instruction pointer into program
   uint origin = 0;                //file offset
   int base = 0;                   //file offset to memory map displacement
-  uint lastLabelCounter = 1;      //- instance counter
-  uint nextLabelCounter = 1;      //+ instance counter
   bool strict = false;            //upgrade warnings to errors when true
 
   bool forwardReference = false;  //true if the last evaluate(string) call contained a forward reference

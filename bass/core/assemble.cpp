@@ -5,8 +5,8 @@ auto Bass::initialize() -> void {
   endian = Endian::LSB;
   origin = 0;
   base = 0;
-  lastLabelCounter = 1;
-  nextLabelCounter = 1;
+  nextLabel.reset(); nextLabel.append(1);
+  lastLabel.reset(); lastLabel.append(1);
 }
 
 auto Bass::assemble(const string& statement) -> bool {
@@ -19,7 +19,7 @@ auto Bass::assemble(const string& statement) -> bool {
   if(s.match("namespace ?* {")) {
     s.trim("namespace ", "{", 1L).strip();
     if(!validate(s)) error("invalid namespace specifier: ", s);
-    scope.append(s); nextLabel.append(0); lastLabel.append(0);
+    scope.append(s); nextLabel.append(1); lastLabel.append(1);
     return true;
   }
 
@@ -34,7 +34,7 @@ auto Bass::assemble(const string& statement) -> bool {
     s.trim("function ", "{", 1L).strip();
     setConstant(s, pc());
     writeSymbolLabel(pc(), s);
-    scope.append(s); nextLabel.append(0); lastLabel.append(0);
+    scope.append(s); nextLabel.append(1); lastLabel.append(1);
     return true;
   }
 
