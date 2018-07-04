@@ -28,12 +28,13 @@ private:
     string pattern;
   };
 
-  auto bitLength(string& text) const -> uint;
+  auto bitLength(string& text) -> uint;
   auto writeBits(uint64_t data, uint bits) -> void;
   auto parseTable(const string& text) -> bool;
   auto assembleTableLHS(Opcode& opcode, const string& text) -> void;
   auto assembleTableRHS(Opcode& opcode, const string& text) -> void;
 
   vector<Opcode> table;
+  bool modifier;
   uint64_t bitval, bitpos;
 };

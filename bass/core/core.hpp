@@ -8,6 +8,8 @@ struct Bass {
   auto constant(const string& name, const string& value) -> void;
   auto assemble(bool strict = false) -> bool;
 
+  bool requireModifier; //require <>^ size modifier
+
   enum class Phase : uint { Analyze, Query, Write };
   enum class Endian : uint { LSB, MSB };
   enum class Evaluation : uint { Strict = 0, Lax = 1 };  //strict mode disallows forward-declaration of constants

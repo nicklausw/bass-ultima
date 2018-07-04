@@ -27,6 +27,7 @@ auto Table::assemble(const string& statement) -> bool {
       if(format.type == Format::Type::Absolute) {
         if(format.match != Format::Match::Weak) {
           uint bits = bitLength(args[format.argument]);
+          if(modifier == false && self.requireModifier) error("no modifier used");
           if(bits != opcode.number[format.argument].bits) {
             if(format.match == Format::Match::Exact || bits != 0) {
               mismatch = true;
@@ -46,7 +47,7 @@ auto Table::assemble(const string& statement) -> bool {
         }
 
         case Format::Type::Absolute: {
-          uint data = evaluate(args[format.argument], Bass::Evaluation::Lax);
+          uint data = evaluate(args[format.argument].strip(), Bass::Evaluation::Lax);
           writeBits(data, opcode.number[format.argument].bits);
           break;
         }
@@ -76,7 +77,7 @@ auto Table::assemble(const string& statement) -> bool {
   return false;
 }
 
-auto Table::bitLength(string& text) const -> uint {
+auto Table::bitLength(string& text) -> uint {
   auto binLength = [&](const char* p) -> uint {
     uint length = 0;
     while(*p) {
@@ -97,6 +98,7 @@ auto Table::bitLength(string& text) const -> uint {
     return length;
   };
 
+  modifier = true;
   char* p = text.get();
   if(*p == '<') { *p = ' '; return  8; }
   if(*p == '>') { *p = ' '; return 16; }
@@ -107,6 +109,7 @@ auto Table::bitLength(string& text) const -> uint {
   if(*p == '$') return hexLength(p + 1);
   if(*p == '0' && *(p + 1) == 'b') return binLength(p + 2);
   if(*p == '0' && *(p + 1) == 'x') return hexLength(p + 2);
+  modifier = false;
   return 0;
 }
 

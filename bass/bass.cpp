@@ -14,13 +14,14 @@ auto nall::main(string_vector args) -> void {
     print(stderr, "usage: bass-ultima [options] source [source ...]\n");
     print(stderr, "\n");
     print(stderr, "options:\n");
-    print(stderr, "  -o target        specify default output filename [overwrite]\n");
-    print(stderr, "  -m target        specify default output filename [modify]\n");
-    print(stderr, "  -d name[=value]  create define with optional value\n");
-    print(stderr, "  -c name[=value]  create constant with optional value\n");
-    print(stderr, "  -sym filename    create symbol file\n");
-    print(stderr, "  -strict          upgrade warnings to errors\n");
-    print(stderr, "  -benchmark       benchmark performance\n");
+    print(stderr, "  -o target          specify default output filename [overwrite]\n");
+    print(stderr, "  -m target          specify default output filename [modify]\n");
+    print(stderr, "  -d name[=value]    create define with optional value\n");
+    print(stderr, "  -c name[=value]    create constant with optional value\n");
+    print(stderr, "  -sym filename      create symbol file\n");
+    print(stderr, "  -strict            upgrade warnings to errors\n");
+    print(stderr, "  -benchmark         benchmark performance\n");
+    print(stderr, "  -require-modifier  require <>^ opcode size modifier\n");
     exit(EXIT_FAILURE);
   }
 
@@ -31,6 +32,7 @@ auto nall::main(string_vector args) -> void {
   bool create = false;
   bool strict = false;
   bool benchmark = false;
+  bool requireModifier = false;
   string_vector sourceFilenames;
 
   for(uint n = 1; n < args.size();) {
@@ -80,6 +82,12 @@ auto nall::main(string_vector args) -> void {
       continue;
     }
 
+    if(s == "-require-modifier") {
+      requireModifier = true;
+      n += 1;
+      continue;
+    }
+
     if(!s.beginsWith("-")) {
       sourceFilenames.append(s);
       n += 1;
@@ -93,6 +101,7 @@ auto nall::main(string_vector args) -> void {
   clock_t clockStart = clock();
   Bass bass;
   bass.target(targetFilename, create);
+  bass.requireModifier = requireModifier;
   if(symFilename) {
     bass.symFile(symFilename);
   }
