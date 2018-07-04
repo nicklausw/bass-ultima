@@ -147,7 +147,9 @@ auto Bass::executeInstruction(Instruction& i) -> bool {
     if(auto macro = findMacro({name})) {
       frames.append({ip, macro().inlined});
       frames.right().invokedBy = activeInstruction;
-      if(!frames.right().inlined) scope.append(p(0));
+      if(!frames.right().inlined) {
+        scope.append(p(0)); lastLabel.append(0); nextLabel.append(0);
+      }
 
       setDefine("#", {}, {"_", macroInvocationCounter++, "_"}, Frame::Level::Inline);
       for(uint n : range(parameters)) {
@@ -169,7 +171,9 @@ auto Bass::executeInstruction(Instruction& i) -> bool {
 
   if(s.match("} endmacro") || s.match("} endinline")) {
     ip = frames.right().ip;
-    if(!frames.right().inlined) scope.removeRight();
+    if(!frames.right().inlined) {
+      scope.removeRight(); lastLabel.removeRight(); nextLabel.removeRight();
+    }
     frames.removeRight();
     return true;
   }
