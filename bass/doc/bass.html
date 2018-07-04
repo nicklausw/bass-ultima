@@ -14,7 +14,7 @@
       }
 
       h2 {
-        background: #eef;
+        background: #bfbfbf;
         font-size: 1.2em;
         margin-bottom: 0.25em;
         padding: 0.25em;
@@ -38,7 +38,7 @@
       }
 
       pre {
-        background: #fee;
+        background: #e6e6e6;
         margin-top: 0.5em;
         padding: 0.5em;
         white-space: pre-line;
@@ -61,7 +61,7 @@
     <p><i>-o target</i> will specify the default target filename, and overwrite
     any existing file by said filename.</p>
 
-    <p><i>-m target</i> will specify the default target filenamd, and will
+    <p><i>-m target</i> will specify the default target filename, and will
     modify, rather than replace, any existing file by said name.</p>
 
     <p><i>-d name[=value]</i> will create a define with the given name, and
@@ -230,7 +230,7 @@
     <pre>
     //create {value} if it does not yet exist
     if !{defined value} {
-    &nbsp;&nbsp;define value(...)
+    &nbsp;&nbsp;define value = ...
     }
     </pre>
 
@@ -305,7 +305,7 @@
 
     <pre>
     macro square(value) {
-    &nbsp;&nbsp;global evaluate result({value} * {value})
+    &nbsp;&nbsp;global evaluate result = {value} * {value}
     }
 
     square(16)
