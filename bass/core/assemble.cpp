@@ -98,7 +98,7 @@ auto Bass::assemble(const string& statement) -> bool {
     s.trimLeft("architecture ", 1L);
     if(s == "none") architecture = new Architecture{*this};
     else {
-      string location{Path::local(), "bass/architectures/", s, ".arch"};
+      string location{Path::local(), "bass-ultima/architectures/", s, ".arch"};
       if(!file::exists(location)) location = {Path::program(), "architectures/", s, ".arch"};
       if(!file::exists(location)) error("unknown architecture: ", s);
       architecture = new Table{*this, string::read(location)};
