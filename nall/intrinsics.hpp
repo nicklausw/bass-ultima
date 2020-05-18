@@ -78,7 +78,7 @@ namespace nall {
   auto Intrinsics::platform() -> Platform { return Platform::MacOS; }
   auto Intrinsics::api() -> API { return API::Posix; }
   auto Intrinsics::display() -> Display { return Display::Quartz; }
-#elif defined(linux) || defined(__linux__)
+#elif defined(linux) || defined(__linux__) || defined(__MSYS__)
   #define PLATFORM_LINUX
   #define API_POSIX
   #define DISPLAY_XORG

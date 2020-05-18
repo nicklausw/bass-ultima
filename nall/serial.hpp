@@ -67,7 +67,7 @@ struct serial {
     port = ::open(device, O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK);
     if(port == -1) return false;
 
-    if(ioctl(port, TIOCEXCL) == -1) { close(); return false; }
+    //if(ioctl(port, TIOCEXCL) == -1) { close(); return false; }
     if(fcntl(port, F_SETFL, 0) == -1) { close(); return false; }
     if(tcgetattr(port, &original_attr) == -1) { close(); return false; }
 

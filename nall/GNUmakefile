@@ -43,6 +43,12 @@ objcppflags := -x objective-c++ -std=c++14
 flags :=
 link :=
 
+# try to catch msys2
+ifneq ($(if $(findstring Msys, $(shell uname -o)),$(word 1, $(subst ., ,$(shell uname -r))),0),0)
+  flags += -D_GNU_SOURCE
+  delete = rm -f $1
+endif
+
 # compiler detection
 ifeq ($(compiler),)
   ifeq ($(platform),windows)
