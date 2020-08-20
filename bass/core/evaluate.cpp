@@ -2,8 +2,8 @@ auto Bass::evaluate(const string& expression, Evaluation mode) -> int64_t {
   forwardReference = false;
 
   maybe<string> name;
-  string last = {scope.merge("."), ".lastLabel#"};
-  string next = {scope.merge("."), ".nextLabel#"};
+  string last = {scope.merge("."), "lastLabel#"};
+  string next = {scope.merge("."), "nextLabel#"};
   if(expression == "--") name = {last, lastLabel[lastLabel.size()-1] - 2};
   if(expression == "-" ) name = {last, lastLabel[lastLabel.size()-1] - 1};
   if(expression == "+" ) name = {next, nextLabel[nextLabel.size()-1] + 0};

@@ -67,14 +67,14 @@ auto Bass::assemble(const string& statement) -> bool {
 
   //- or - {
   if(s.match("-") || s.match("- {")) {
-    string s{scope.merge("."), ".lastLabel#"};
+    string s{scope.merge("."), "lastLabel#"};
     setConstant({s, lastLabel[lastLabel.size()-1]++}, pc());
     return true;
   }
 
   //+ or + {
   if(s.match("+") || s.match("+ {")) {
-    string s{scope.merge("."), ".nextLabel#"};
+    string s{scope.merge("."), "nextLabel#"};
     setConstant({s, nextLabel[nextLabel.size()-1]++}, pc());
     return true;
   }
